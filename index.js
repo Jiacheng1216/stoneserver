@@ -3,9 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 // dotenv.config();
+// mongodb://localhost:27017/stoneDB
 
 mongoose
-  .connect("mongodb://localhost:27017/stoneDB")
+  .connect(
+    "mongodb+srv://ah88121601:hs90842995@shiningstonecluster.jh1t7d1.mongodb.net/?retryWrites=true&w=majority&appName=ShiningStoneCluster"
+  )
   .then(() => {
     console.log("Connected to stoneDB");
   })
