@@ -21,6 +21,9 @@ const itemSchema = new Schema({
   imagePath: {
     type: String,
   },
+  imagePublicId:{
+    type:String,
+  },
   date: {
     type: Date,
     default: Date.now,

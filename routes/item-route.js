@@ -4,6 +4,7 @@ const router = require("express").Router();
 // const path = require("path");
 const itemModels = require("../models/item-models");
 const { upload } = require("../utils/cloudinary");
+const { v2: cloudinary } = require("cloudinary");
 
 router.use((req, res, next) => {
   console.log("正在接收一個跟石頭有關的請求...");
@@ -39,6 +40,7 @@ router.post("/postPhoto", upload.single("photo"), async (req, res) => {
      res.send({
       msg: "圖片上傳成功",
       imagePath: req.file.path, // Cloudinary 圖片網址
+      imagePublicId: req.file.filename,
     });
   } catch (e) {
     return res.send(500).send("無法上傳圖片");
@@ -52,12 +54,13 @@ router.post("/", async (req, res) => {
   // if (error) return res.status(400).send(error.details[0].message);
 
   try {
-    let { color, height, width, imagePath } = req.body;
+    let { color, height, width, imagePath,imagePublicId } = req.body;
     let postItem = new itemModels({
       color,
       height,
       width,
       imagePath,
+      imagePublicId
     });
 
     let savedItem = await postItem.save();
@@ -76,6 +79,14 @@ router.delete("/delete/:id", async (req, res) => {
     const itemId = req.params.id;
     const deleteItem = await itemModels.findByIdAndDelete(itemId);
     if (!deleteItem) return res.status(404).json({ error: "商品未找到" });
+
+    // 刪除 Cloudinary 圖片
+    if (deleteItem.imagePublicId) {
+      await cloudinary.uploader.destroy(deleteItem.imagePublicId);
+    }
+
+    console.log(deleteItem)
+
     return res.send({
       msg: "刪除商品成功",
       deleteItem,
