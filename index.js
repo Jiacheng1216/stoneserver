@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
-// dotenv.config();
+const dotenv = require('dotenv');
+dotenv.config();
 // mongodb://localhost:27017/stoneDB
 
 mongoose

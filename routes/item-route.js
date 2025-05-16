@@ -1,31 +1,32 @@
 const router = require("express").Router();
 // const ItemValidation = require("../validation").itemValidation;
-const multer = require("multer");
-const path = require("path");
+// const multer = require("multer");
+// const path = require("path");
 const itemModels = require("../models/item-models");
+const { upload } = require("../utils/cloudinary");
 
 router.use((req, res, next) => {
   console.log("正在接收一個跟石頭有關的請求...");
   next();
 });
 
-//接收前端上傳的圖片
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "..", "uploads"));
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+// //接收前端上傳的圖片
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, "..", "uploads"));
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const fileFilter = (req, file, callback) => {
-  // 解决中文名乱码的问题 latin1 是一种编码格式
-  file.originalname = Buffer.from(file.originalname, "latin1").toString("utf8");
-  callback(null, true);
-};
+// const fileFilter = (req, file, callback) => {
+//   // 解决中文名乱码的问题 latin1 是一种编码格式
+//   file.originalname = Buffer.from(file.originalname, "latin1").toString("utf8");
+//   callback(null, true);
+// };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+// const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 //上傳圖片的router
 router.post("/postPhoto", upload.single("photo"), async (req, res) => {
@@ -34,7 +35,11 @@ router.post("/postPhoto", upload.single("photo"), async (req, res) => {
       return res.status(400).send("沒有上傳圖片");
     }
 
-    res.send(req.file);
+     // 傳回 Cloudinary 上的圖片網址
+     res.send({
+      msg: "圖片上傳成功",
+      imagePath: req.file.path, // Cloudinary 圖片網址
+    });
   } catch (e) {
     return res.send(500).send("無法上傳圖片");
   }
