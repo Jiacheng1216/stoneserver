@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
 
     let savedItem = await postItem.save();
 
-    console.log(`收到了上傳${color}色石頭的請求...`);
+    console.log(`收到了上傳${color}石頭的請求...`);
     return res.send({
       msg: "成功刊登商品",
       savedItem,
@@ -87,7 +87,7 @@ router.delete("/delete/:id", async (req, res) => {
       await cloudinary.uploader.destroy(deleteItem.imagePublicId);
     }
 
-    console.log("收到了刪除石頭的請求...");
+    console.log(`收到了刪除${deleteItem.color}石頭的請求...`);
 
     return res.send({
       msg: "刪除商品成功",
