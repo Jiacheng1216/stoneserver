@@ -7,7 +7,7 @@ const { upload } = require("../utils/cloudinary");
 const { v2: cloudinary } = require("cloudinary");
 
 router.use((req, res, next) => {
-  console.log("正在接收一個跟石頭有關的請求...");
+  // console.log("正在接收一個跟石頭有關的請求...");
   next();
 });
 
@@ -64,6 +64,8 @@ router.post("/", async (req, res) => {
     });
 
     let savedItem = await postItem.save();
+
+    console.log("收到上傳石頭的請求...");
     return res.send({
       msg: "成功刊登商品",
       savedItem,
@@ -85,6 +87,8 @@ router.delete("/delete/:id", async (req, res) => {
       await cloudinary.uploader.destroy(deleteItem.imagePublicId);
     }
 
+    console.log("收到刪除石頭的請求...");
+
     return res.send({
       msg: "刪除商品成功",
       deleteItem,
@@ -100,6 +104,8 @@ router.get("/showItems", async (req, res) => {
   try {
     const allItems = await itemModels.find();
 
+    console.log("收到瀏覽並查詢所有石頭的請求...");
+    
     return res.send(allItems);
   } catch (e) {
     res.status(500).send("無法查詢所有商品");
@@ -111,6 +117,7 @@ router.get(`/folder/:color`, async (req, res) => {
   try {
     const itemColor = req.params.color;
     const findItem = await itemModels.find({ color: itemColor });
+    console.log("收到瀏覽並查詢各別顏色石頭的請求...");
     res.send(findItem);
   } catch (e) {
     console.log(e);
