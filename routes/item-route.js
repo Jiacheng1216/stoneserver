@@ -85,8 +85,6 @@ router.delete("/delete/:id", async (req, res) => {
       await cloudinary.uploader.destroy(deleteItem.imagePublicId);
     }
 
-    console.log(deleteItem)
-
     return res.send({
       msg: "刪除商品成功",
       deleteItem,
