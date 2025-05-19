@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
 
     let savedItem = await postItem.save();
 
-    console.log("收到了上傳石頭的請求...");
+    console.log(`收到了上傳${color}色石頭的請求...`);
     return res.send({
       msg: "成功刊登商品",
       savedItem,
