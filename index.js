@@ -6,14 +6,12 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// 建議加上這行，讓 req.ip 能正確取得原始 IP（如果有反向代理）
+// 加上這行，讓 req.ip 能正確取得原始 IP（如果有反向代理）
 app.set("trust proxy", true);
 
 // === 連接 MongoDB ===
 mongoose
-  .connect(
-    "mongodb+srv://ah88121601:hs90842995@shiningstonecluster.jh1t7d1.mongodb.net/?retryWrites=true&w=majority&appName=ShiningStoneCluster"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to stoneDB");
   })
@@ -57,6 +55,7 @@ app.get("/health", (req, res) => {
 app.use("/api/item", require("./routes/item-route"));
 
 // === 啟動伺服器 ===
-app.listen(process.env.PORT || 8080, () => {
-  console.log("Server is running on port 8080");
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
