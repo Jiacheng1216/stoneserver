@@ -35,7 +35,8 @@ app.use(cors({ origin: "*" }));
 
 // Middleware：顯示每次請求的 IP
 app.use((req, res, next) => {
-  const ip = req.headers["x-forwarded-for"] || req.ip;
+  const xForwardedFor = req.headers["x-forwarded-for"];
+  const ip = xForwardedFor ? xForwardedFor.split(",")[0].trim() : req.ip;
   console.log(`收到請求，IP：${ip}`);
   next();
 });
