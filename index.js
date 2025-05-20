@@ -2,10 +2,14 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
-const dotenv = require('dotenv');
-dotenv.config();
-// mongodb://localhost:27017/stoneDB
+const dotenv = require("dotenv");
 
+dotenv.config();
+
+// 建議加上這行，讓 req.ip 能正確取得原始 IP（如果有反向代理）
+app.set("trust proxy", true);
+
+// === 連接 MongoDB ===
 mongoose
   .connect(
     "mongodb+srv://ah88121601:hs90842995@shiningstonecluster.jh1t7d1.mongodb.net/?retryWrites=true&w=majority&appName=ShiningStoneCluster"
@@ -18,11 +22,25 @@ mongoose
   });
 
 // === Middleware 設定 ===
-//當發送images的路由時,會導向uploads資料夾
+
+// 當請求 /images 路由時，對應到 uploads 資料夾中的靜態檔案
 app.use("/images", express.static("uploads"));
+
+// 解析 JSON 與 URL 編碼的請求資料
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 啟用 CORS（允許所有來源）
 app.use(cors({ origin: "*" }));
+
+// Middleware：顯示每次請求的 IP
+app.use((req, res, next) => {
+  const ip = req.headers["x-forwarded-for"] || req.ip;
+  console.log(`收到請求，IP：${ip}`);
+  next();
+});
+
+// 設定 CORS header（強制允許跨來源）
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   next();
@@ -30,7 +48,7 @@ app.use((req, res, next) => {
 
 // === Health Check 路由 ===
 app.get("/health", (req, res) => {
-  console.log('五分鐘檢查一次health')
+  console.log("五分鐘檢查一次 health");
   res.status(200).send("OK");
 });
 
