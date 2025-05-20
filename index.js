@@ -37,7 +37,7 @@ app.use(cors({ origin: "*" }));
 app.use((req, res, next) => {
   const xForwardedFor = req.headers["x-forwarded-for"];
   const ip = xForwardedFor ? xForwardedFor.split(",")[0].trim() : req.ip;
-  console.log(`收到請求，IP：${ip}`);
+  console.log(`🟢 收到請求，來源IP：${ip}`);
   next();
 });
 
