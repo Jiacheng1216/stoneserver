@@ -36,8 +36,8 @@ router.post("/postPhoto", upload.single("photo"), async (req, res) => {
       return res.status(400).send("沒有上傳圖片");
     }
 
-     // 傳回 Cloudinary 上的圖片網址
-     res.send({
+    // 傳回 Cloudinary 上的圖片網址
+    res.send({
       msg: "圖片上傳成功",
       imagePath: req.file.path, // Cloudinary 圖片網址
       imagePublicId: req.file.filename,
@@ -54,13 +54,23 @@ router.post("/", async (req, res) => {
   // if (error) return res.status(400).send(error.details[0].message);
 
   try {
-    let { color, height, width, imagePath,imagePublicId } = req.body;
+    let {
+      color,
+      height,
+      width,
+      imagePath,
+      imagePublicId,
+      isPaper,
+      firstLastNumbers,
+    } = req.body;
     let postItem = new itemModels({
       color,
       height,
       width,
       imagePath,
-      imagePublicId
+      imagePublicId,
+      isPaper,
+      firstLastNumbers,
     });
 
     let savedItem = await postItem.save();
@@ -105,7 +115,7 @@ router.get("/showItems", async (req, res) => {
     const allItems = await itemModels.find();
 
     console.log("收到了瀏覽並查詢所有石頭的請求...");
-    
+
     return res.send(allItems);
   } catch (e) {
     res.status(500).send("無法查詢所有商品");

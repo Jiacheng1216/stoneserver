@@ -21,8 +21,14 @@ const itemSchema = new Schema({
   imagePath: {
     type: String,
   },
-  imagePublicId:{
-    type:String,
+  imagePublicId: {
+    type: String,
+  },
+  isPaper: {
+    type: Boolean,
+  },
+  firstLastNumbers: {
+    type: String,
   },
   date: {
     type: Date,
