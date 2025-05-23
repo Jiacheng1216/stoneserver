@@ -41,6 +41,7 @@ router.post("/postPhoto", upload.single("photo"), async (req, res) => {
       msg: "圖片上傳成功",
       imagePath: req.file.path, // Cloudinary 圖片網址
       imagePublicId: req.file.filename,
+      fileName: req.file.originalname,
     });
   } catch (e) {
     return res.send(500).send("無法上傳圖片");
@@ -62,6 +63,7 @@ router.post("/", async (req, res) => {
       imagePublicId,
       isPaper,
       firstLastNumbers,
+      fileName,
     } = req.body;
     let postItem = new itemModels({
       color,
@@ -71,6 +73,7 @@ router.post("/", async (req, res) => {
       imagePublicId,
       isPaper,
       firstLastNumbers,
+      fileName,
     });
 
     let savedItem = await postItem.save();

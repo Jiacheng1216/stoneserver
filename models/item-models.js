@@ -30,6 +30,9 @@ const itemSchema = new Schema({
   firstLastNumbers: {
     type: String,
   },
+  fileName: {
+    type: String,
+  },
   date: {
     type: Date,
     default: Date.now,
