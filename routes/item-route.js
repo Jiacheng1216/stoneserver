@@ -161,4 +161,43 @@ router.put("/edit/:id", async (req, res) => {
   }
 });
 
+// 新 API: 一次上傳多張圖 + 儲存資料
+router.post("/upload-multiple", upload.array("images"), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).send("沒有收到圖片");
+    }
+
+    const { color, height, width, isPaper, firstLastNumbers } = req.body;
+
+    const savedItems = await Promise.all(
+      req.files.map((file) => {
+        const newItem = new itemModels({
+          color,
+          height,
+          width,
+          imagePath: file.path,
+          imagePublicId: file.filename,
+          isPaper: isPaper === "true",
+          firstLastNumbers,
+          fileName: file.originalname.replace(/\.[^/.]+$/, ""),
+        });
+
+        return newItem.save();
+      })
+    );
+
+    console.log(`收到一次性上傳 ${savedItems.length} 張 ${color} 石頭的請求...`);
+
+    res.status(200).send({
+      msg: "成功上傳多張圖片並儲存資料",
+      savedItems,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("伺服器錯誤：無法完成批次上傳");
+  }
+});
+
+
 module.exports = router;
