@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const itemSchema = new Schema({
-  title: {
+  // 產地
+  stoneOrigin: {
     type: String,
     require: true,
   },
+  // 石頭顏色
   color: {
     type: String,
     require: true,

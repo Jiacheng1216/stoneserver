@@ -29,7 +29,7 @@ router.use((req, res, next) => {
 
 // const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-//上傳圖片的router
+//上傳圖片的router(沒在用)
 router.post("/postPhoto", upload.single("photo"), async (req, res) => {
   try {
     if (!req.file) {
@@ -48,7 +48,7 @@ router.post("/postPhoto", upload.single("photo"), async (req, res) => {
   }
 });
 
-//刊登商品的router
+//刊登商品的router(沒在用)
 router.post("/", async (req, res) => {
   //確認資料是否符合規範
   // let { error } = ItemValidation(req.body);
@@ -88,6 +88,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// 批量刪除的route
 router.delete("/delete", async (req, res) => {
   try {
     const { ids } = req.body;
@@ -144,7 +145,7 @@ router.get(`/folder/:color`, async (req, res) => {
   }
 });
 
-//編輯商品資訊
+//編輯商品資訊(沒在用)
 router.put("/edit/:id", async (req, res) => {
   const itemId = req.params.id;
   const { color, height, width, imagePath } = req.body;
@@ -175,7 +176,8 @@ router.post("/upload-multiple", upload.array("images"), async (req, res) => {
       return res.status(400).send("沒有收到圖片");
     }
 
-    const { color, height, width, isPaper, firstLastNumbers } = req.body;
+    const { color, height, width, isPaper, firstLastNumbers, stoneOrigin } =
+      req.body;
 
     const savedItems = await Promise.all(
       req.files.map((file) => {
@@ -183,6 +185,7 @@ router.post("/upload-multiple", upload.array("images"), async (req, res) => {
           color,
           height,
           width,
+          stoneOrigin,
           imagePath: file.path,
           imagePublicId: file.filename,
           isPaper: isPaper === "true",
