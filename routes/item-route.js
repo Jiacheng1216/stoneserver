@@ -145,22 +145,21 @@ router.get(`/folder/:color`, async (req, res) => {
   }
 });
 
-//編輯商品資訊(沒在用)
+//編輯商品資訊
 router.put("/edit/:id", async (req, res) => {
   const itemId = req.params.id;
-  const { color, height, width, imagePath } = req.body;
+  const { isPublic } = req.body.data;
 
   try {
+    console.log("收到編輯圖片資訊的請求...");
+
     const item = await itemModels.findById(itemId);
     if (!item) {
       return res.status(404).send("商品未找到");
     }
 
     //更新商品資訊
-    item.color = color;
-    item.height = height;
-    item.width = width;
-    item.imagePath = imagePath;
+    item.isPublic = isPublic;
 
     const updatedItem = await item.save();
     res.status(200).send({ msg: "更新商品成功!", updatedItem });
