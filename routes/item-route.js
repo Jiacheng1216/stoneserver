@@ -176,8 +176,15 @@ router.post("/upload-multiple", upload.array("images"), async (req, res) => {
       return res.status(400).send("沒有收到圖片");
     }
 
-    const { color, height, width, isPaper, firstLastNumbers, stoneOrigin } =
-      req.body;
+    const {
+      color,
+      height,
+      width,
+      isPaper,
+      firstLastNumbers,
+      stoneOrigin,
+      isPublic,
+    } = req.body;
 
     const savedItems = await Promise.all(
       req.files.map((file) => {
@@ -191,6 +198,7 @@ router.post("/upload-multiple", upload.array("images"), async (req, res) => {
           isPaper: isPaper === "true",
           firstLastNumbers,
           fileName: file.originalname.replace(/\.[^/.]+$/, ""),
+          isPublic: isPublic === "true",
         });
 
         return newItem.save();
