@@ -88,26 +88,33 @@ router.post("/", async (req, res) => {
   }
 });
 
-//刪除商品
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete", async (req, res) => {
   try {
-    const itemId = req.params.id;
-    const deleteItem = await itemModels.findByIdAndDelete(itemId);
-    if (!deleteItem) return res.status(404).json({ error: "商品未找到" });
+    const { ids } = req.body;
 
-    // 刪除 Cloudinary 圖片
-    if (deleteItem.imagePublicId) {
-      await cloudinary.uploader.destroy(deleteItem.imagePublicId);
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).send("請提供要刪除的商品");
     }
 
-    console.log(`收到了刪除${deleteItem.color}石頭的請求...`);
+    console.log(`收到了刪除 ${ids.length} 張圖片的請求...`);
+
+    const results = await Promise.all(
+      ids.map(async (id) => {
+        const deleteItem = await itemModels.findByIdAndDelete(id);
+        if (deleteItem?.imagePublicId) {
+          await cloudinary.uploader.destroy(deleteItem.imagePublicId);
+        }
+        return deleteItem;
+      })
+    );
 
     return res.send({
-      msg: "刪除商品成功",
-      deleteItem,
+      msg: "刪除資料成功",
+      deletedCount: results.filter(Boolean).length,
+      ids,
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).send("刪除商品時出錯");
   }
 });
@@ -187,7 +194,9 @@ router.post("/upload-multiple", upload.array("images"), async (req, res) => {
       })
     );
 
-    console.log(`收到一次性上傳 ${savedItems.length} 張 ${color} 石頭的請求...`);
+    console.log(
+      `收到一次性上傳 ${savedItems.length} 張 ${color} 石頭的請求...`
+    );
 
     res.status(200).send({
       msg: "成功上傳多張圖片並儲存資料",
@@ -198,6 +207,5 @@ router.post("/upload-multiple", upload.array("images"), async (req, res) => {
     res.status(500).send("伺服器錯誤：無法完成批次上傳");
   }
 });
-
 
 module.exports = router;
